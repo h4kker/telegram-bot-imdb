@@ -3,7 +3,7 @@ import aiohttp
 API_URL = "https://imdb-top-100-movies1.p.rapidapi.com/"
 HEADERS = {
     "X-RapidAPI-Key": "8e908df381msh3445741ab9cf3cap1d60c6jsnda8602f5a917",
-    "X-RapidAPI-Host": "imdb-top-100-movies.p.rapidapi.com"
+    "X-RapidAPI-Host": "imdb-top-100-movies.p.rapidapi.com",
 }
 
 

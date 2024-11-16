@@ -1,2 +1,3 @@
 import os
-token = os.getenv('token')
+
+token = os.getenv("token")
