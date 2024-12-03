@@ -11,16 +11,17 @@ router = Router()
 async def start_message_handler(message: Message):
     await message.answer(
         text=f"""Hello {message.from_user.full_name}! 
-    Бот позволяет выполнять запросы для получения списка фильмов с минимальными и максимальными рейтингами, а также запрашивать фильмы в пользовательском диапазоне рейтингов.
-     Он также сохраняет историю последних 10 запросов для каждого пользователя"""
+        The bot allows you to query movies with the lowest and highest ratings, 
+        as well as query movies in a custom rating range.
+        It also keeps a history of the last 10 queries for each user."""
     )
 
     text = f"""
-    {message.from_user.first_name} можете использовать следующие команды для работы с ботом:
-    1. Запросить минимальные значения (команда /low).
-    2. Запросить максимальные значения (команда /high).
-    3. Запросить диапазон значений (команда /custom).
-    4. Узнать историю запросов (команда /history).
+    {message.from_user.first_name}, you can use the following commands:
+    1. Query movies with the lowest rating (command /low).
+    2. Query movies with the highest rating (command /high).
+    3. Query movies in a custom range (command /custom <start> <end>).
+    4. View your query history (command /history).
     """
     await message.answer(text=text)
 
@@ -28,19 +29,23 @@ async def start_message_handler(message: Message):
 @router.message(Command("help"))
 async def command_help_handler(message: Message):
     text = f"""
-{message.from_user.first_name} можете использовать следующие команды для работы с ботом:
-1. Запросить фильмы с наименьшим рейтингом (команда /low).
-2. Запросить фильмы с наибольшим рейтингом (команда /high).
-3. Запросить диапазон значений (команда /custom 10 20).
-4. Узнать историю запросов (команда /history).
+{message.from_user.first_name}, you can use the following commands to interact with the bot:
+1. Query movies with the lowest rating (command /low).
+2. Query movies with the highest rating (command /high).
+3. Query a custom range of movies (command /custom 10 20).
+4. View the history of your requests (command /history).
 """
     await message.answer(text=text)
 
 
 @router.message(Command("low"))
-async def command_low_handler(message: Message):
+async def command_low_handler(message: Message) -> None:
     add_to_history(message.from_user.id, "/low")
     data = await fetch_movies()
+
+    if "error" in data:
+        await message.answer(text=f"Error: {data['error']}")
+        return
 
     if isinstance(data, list):
         if len(data) >= 10:
@@ -51,18 +56,22 @@ async def command_low_handler(message: Message):
                 ]
             )
             await message.answer(
-                text=f"10 фильмов с наименьшим рейтингом:\n{movie_list}"
+                text=f"10 movies with the lowest ratings:\n{movie_list}"
             )
         else:
-            await message.answer(text="В списке недостаточно фильмов.")
+            await message.answer(text="The list contains insufficient movies.")
     else:
-        await message.answer(text=f"Ошибка: {data.get('error', 'Неизвестная ошибка')}")
+        await message.answer(text=f"Error: {data.get('error', 'invalid data from the API.')}")
 
 
 @router.message(Command("high"))
-async def command_high_handler(message: Message):
+async def command_high_handler(message: Message) -> None:
     add_to_history(message.from_user.id, "/high")
     data = await fetch_movies()
+
+    if "error" in data:
+        await message.answer(text=f"Error: {data['error']}")
+        return
 
     if isinstance(data, list):
         if len(data) >= 10:
@@ -73,16 +82,16 @@ async def command_high_handler(message: Message):
                 ]
             )
             await message.answer(
-                text=f"10 фильмов с наибольшим рейтингом:\n{movie_list}"
+                text=f"10 movies with the lowest ratings:\n{movie_list}"
             )
         else:
-            await message.answer(text="В списке недостаточно фильмов.")
+            await message.answer(text="The list contains insufficient movies..")
     else:
-        await message.answer(text=f"Ошибка: {data.get('error', 'Неизвестная ошибка')}")
+        await message.answer(text=f"Error: {data.get('error', 'invalid data from the API.')}")
 
 
 @router.message(Command("custom"))
-async def command_custom_handler(message: Message):
+async def command_custom_handler(message: Message) -> None:
     args = message.text.split()
 
     if len(args) == 3:
@@ -92,21 +101,21 @@ async def command_custom_handler(message: Message):
             data = await fetch_movies()
             if start > end:
                 await message.answer(
-                    text="Начальное число должно быть меньше конечного."
+                    text="The starting number should be less than the ending number."
                 )
                 await message.answer(
-                    text="Пожалуйста, введите два числа для диапазона, например: /custom 1 10."
+                    text="Please enter two numbers for the range, e.g., /custom 1 10."
                 )
                 return
             elif start < 0 or end < 0:
                 await message.answer(
-                    text="Начальное и конечное числа должны быть положительными."
+                    text="The starting and ending numbers must be positive."
                 )
                 return
             elif isinstance(data, list):
                 if start < 0 or end > len(data):
                     await message.answer(
-                        text="Диапазон выходит за пределы доступных фильмов."
+                        text="The range exceeds the available movies."
                     )
                     return
 
@@ -117,25 +126,25 @@ async def command_custom_handler(message: Message):
                     ]
                 )
                 await message.answer(
-                    text=f"Фильмы в диапазоне с {start + 1} по {end}:\n{movie_list}"
+                    text=f"Movies in the range from {start + 1} to {end}:\n{movie_list}"
                 )
                 add_to_history(message.from_user.id, f"/custom {args[1]} {args[2]}")
             else:
                 await message.answer(
-                    text=f"Ошибка: {data.get('error', 'Неизвестная ошибка')}"
+                    text=f"Error: {data.get('error', 'invalid data from the API.')}"
                 )
         except ValueError:
             await message.answer(
-                text="Пожалуйста, введите два числа для диапазона, например: /custom 1 10."
+                text="Please enter two numbers for the range, e.g., /custom 1 10."
             )
     else:
         await message.answer(
-            text="Команда должна содержать два числа для диапазона, например: /custom 1 10."
+            text="The command should include two numbers for the range, e.g., /custom 1 10."
         )
 
 
 @router.message(Command("history"))
-async def command_history_handler(message: Message):
+async def command_history_handler(message: Message) -> None:
     history = get_user_history(message.from_user.id)
     if history:
         history_text = "\n".join(
@@ -145,7 +154,7 @@ async def command_history_handler(message: Message):
             ]
         )
         await message.answer(
-            text=f"История ваших последних 10 запросов:\n{history_text}"
+            text=f"Your last 10 queries:\n{history_text}"
         )
     else:
-        await message.answer(text="История запросов пуста.")
+        await message.answer(text="Your query history is empty.")

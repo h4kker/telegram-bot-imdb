@@ -2,7 +2,7 @@
 venv/
 
 # Игнорировать базу данных
-database.db
+bot_history.db
 
 # Игнорировать все файлы Python-архива
 *.pyc

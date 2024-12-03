@@ -7,7 +7,7 @@ from aiogram import Bot, Dispatcher
 from handlers import router
 
 
-async def main():
+async def main() -> None:
     create_tables()
     bot = Bot(config.token)
     dp = Dispatcher()

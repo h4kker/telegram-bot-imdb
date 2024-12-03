@@ -1,60 +1,66 @@
-# Telegram Бот для работы с IMDb API
+# Telegram Bot for IMDb API
 
-# Описание проекта
+## Project Description
 
-Этот Telegram-бот взаимодействует с API IMDb и предоставляет пользователям доступ к информации о фильмах. 
-Бот позволяет выполнять запросы для получения списка фильмов с минимальными и максимальными рейтингами, 
-а также запрашивать фильмы в пользовательском диапазоне рейтингов.
-Он также сохраняет историю последних 10 запросов для каждого пользователя.
+This Telegram bot interacts with the IMDb API and provides users with access to movie information. The bot allows users to query the list of movies with the lowest and highest ratings, as well as query movies within a custom rating range. It also keeps a history of the last 10 queries for each user.
 
-# Основной функционал
+## Main Functionality
 
-Бот поддерживает следующие команды:
-- `/start` - Приветственное сообщение и информация о командах.
-- `/help` - Описание доступных команд.
-- `/low` - Запрос фильмов с наименьшим рейтингом.
-- `/high` - Запрос фильмов с наибольшим рейтингом.
-- `/custom <начало> <конец>` - Запрос фильмов в указанном диапазоне позиций.
-- `/history` - Показ последних 10 запросов пользователя.
+The bot supports the following commands:
+- `/start` - Welcome message and information about the commands.
+- `/help` - Description of available commands.
+- `/low` - Get movies with the lowest rating.
+- `/high` - Get movies with the highest rating.
+- `/custom <start> <end>` - Get movies in a specified range of positions.
+- `/history` - Show the last 10 user queries.
 
-# Установка
+## Installation
 
-1. Склонируйте репозиторий с проектом:
+1. Clone the project repository:
    ```bash
-   git clone <URL_вашего_репозитория>
+   git clone <URL_of_your_repository>
    cd TelegramBot
 
-2. Создайте виртуальное окружение: 
+
+2. Create a virtual environment: 
     ```bash
     python -m venv venv
 
-3. Активируйте виртуальное окружение:
+3. Activate the virtual environment:
 
-    Для Windows: venv\Scripts\activate
+    For Windows: venv\Scripts\activate
 
-    Для Linux/Mac: source venv/bin/activate
+    For Linux/Mac: source venv/bin/activate
 
-4. Установите зависимости:
+4. Install the dependencies::
     ```bash
     pip install -r requirements.txt
 
-# Конфигурация
+# Configuration
 
-Перед запуском бота убедитесь, что у вас настроен файл для переменных окружения (например, `.env`), 
-содержащий ваш ключ API для взаимодействия с IMDb. Пример переменных:
+Before running the bot, make sure you set up the environment file (e.g., `.env` or `config`), 
+which contains your API key for interacting with IMDb. Example variables:
 ```
-    RAPIDAPI_KEY=<Ваш ключ API>
+token=Your_Bot_Token
+RAPIDAPI_KEY=Your_API_Key
+
 ```
 
-# Использование
+# Running the bot 
+To run the bot, use the following command:
+```bash
+python main.py
+```
+ 
+# Usage
 
-После запуска бота отправьте команду `/start` в Telegram, чтобы получить список доступных команд. 
-Вы можете запрашивать фильмы с помощью команд /low, /high или использовать пользовательский диапазон с /custom.
+Once the bot is running, send the `/start` command in Telegram to get a list of available commands. 
+You can query movies using `/low`, `/high` or use a custom range with `/custom`.
 
-Примеры команд:
+Example Commands:
 
-    - /low — получить список фильмов с минимальными рейтингами.
-    - /high — получить список фильмов с максимальными рейтингами.
-    - /custom 1 10 — получить список фильмов с 1 по 10 позиции рейтинга.
-    - /history — посмотреть историю ваших последних 10 запросов.
+    - /low —  Get movies with the lowest ratings.
+    - /high — Get movies with the highest ratings.
+    - /custom 1 10 — Get movies from position 1 to 10 in the rating list.
+    - /history — View the last 10 user queries.
 
